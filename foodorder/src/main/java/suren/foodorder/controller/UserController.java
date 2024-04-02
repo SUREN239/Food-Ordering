@@ -50,4 +50,24 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
+    @PutMapping("/user/{id}")
+    User updateUser(@RequestBody User newUser, @PathVariable Long id){
+        return userRepo.findById(id)
+                .map(user -> {
+                    user.setName(newUser.getName());
+                    user.setEmail(newUser.getEmail());
+                    user.setPassword(newUser.getPassword());
+                    return userRepo.save(user);
+                }).orElseThrow(()->new UserNotFoundException(id));
+    }
+
+    @DeleteMapping("/user/{id}")
+    String deleteUser(@PathVariable Long id){
+        if(!userRepo.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
+        userRepo.deleteById(id); 
+        return "user with id "+id+" has been deleted success.";
+    }
 }
