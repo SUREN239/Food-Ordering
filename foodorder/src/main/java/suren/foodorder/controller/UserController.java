@@ -74,6 +74,7 @@ public class UserController {
     }
 
     @PatchMapping("/user/{id}")
+<<<<<<< HEAD
     public ResponseEntity<User> patchUser(@RequestBody User partialUser, @PathVariable Long id) {
         return userRepo.findById(id)
                 .map(user -> {
@@ -89,4 +90,21 @@ public class UserController {
                     return ResponseEntity.ok(userRepo.save(user));
                 }).orElseThrow(() -> new UserNotFoundException(id));
     }
+=======
+public ResponseEntity<User> patchUser(@RequestBody User partialUser, @PathVariable Long id) {
+    return userRepo.findById(id)
+            .map(user -> {
+                if (partialUser.getName() != null) {
+                    user.setName(partialUser.getName());
+                }
+                if (partialUser.getEmail() != null) {
+                    user.setEmail(partialUser.getEmail());
+                }
+                if (partialUser.getPassword() != null) {
+                    user.setPassword(partialUser.getPassword());
+                }
+                return ResponseEntity.ok(userRepo.save(user));
+            }).orElseThrow(() -> new UserNotFoundException(id));
+}
+>>>>>>> bc572556675ae358c37cb6df74be1dcdd2bb5008
 }
