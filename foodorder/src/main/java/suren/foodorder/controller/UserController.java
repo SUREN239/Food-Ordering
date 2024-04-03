@@ -11,13 +11,14 @@ import suren.foodorder.repository.UserRepo;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+// @RequestMapping("api/v1/user")
+// @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
     private UserRepo userRepo;
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public User newUser(@RequestBody User newUser){
         System.out.println(newUser.getName());
         User savedUser = userRepo.save(newUser);
@@ -34,12 +35,13 @@ public class UserController {
         return userRepo.findAll();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id){
         return userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
-
+  
+    
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody User loginRequest) {
         User user = userRepo.findByEmail(loginRequest.getEmail());
@@ -49,5 +51,42 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+
+    @PutMapping("/user/{id}")
+    User updateUser(@RequestBody User newUser, @PathVariable Long id){
+        return userRepo.findById(id)
+                .map(user -> {
+                    user.setName(newUser.getName());
+                    user.setEmail(newUser.getEmail());
+                    user.setPassword(newUser.getPassword());
+                    return userRepo.save(user);
+                }).orElseThrow(()->new UserNotFoundException(id));
+    }
+
+    @DeleteMapping("/user/{id}")
+    String deleteUser(@PathVariable Long id){
+        if(!userRepo.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
+        userRepo.deleteById(id); 
+        return "user with id "+id+" has been deleted success.";
+    }
+
+    @PatchMapping("/user/{id}")
+    public ResponseEntity<User> patchUser(@RequestBody User partialUser, @PathVariable Long id) {
+        return userRepo.findById(id)
+                .map(user -> {
+                    if (partialUser.getName() != null) {
+                        user.setName(partialUser.getName());
+                    }
+                    if (partialUser.getEmail() != null) {
+                        user.setEmail(partialUser.getEmail());
+                    }
+                    if (partialUser.getPassword() != null) {
+                        user.setPassword(partialUser.getPassword());
+                    }
+                    return ResponseEntity.ok(userRepo.save(user));
+                }).orElseThrow(() -> new UserNotFoundException(id));
     }
 }
