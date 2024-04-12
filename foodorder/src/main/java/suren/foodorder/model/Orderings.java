@@ -13,10 +13,15 @@ public class Orderings {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    // @ManyToOne
+    // @JsonBackReference
+    // @JoinColumn(name = "user_id")
+    // private User user; // Many orders belong to one user
+
+    @JsonIgnore
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "user_id")
-    private User user; // Many orders belong to one user
+    private User user;
 
     private String productname;
     private double price;
