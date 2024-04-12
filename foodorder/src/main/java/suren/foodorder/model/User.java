@@ -17,9 +17,13 @@ public class User {
     private String number;
     private String password;
     
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // @JsonManagedReference
+    //  // One user can have multiple orders
+
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Orderings> orders; // One user can have multiple orders
+    private List<Orderings> orders;
 
     // Getters and setters
     public Long getId() {
