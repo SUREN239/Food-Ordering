@@ -1,36 +1,32 @@
 package suren.foodorder.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-
+@Table(name="user")
 public class User {
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private String name;
     private String email;
     private String number;
     private String password;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Orderings> orders; // One user can have multiple orders
 
-    public User(long id, String name, String email, String number, String pass) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.number = number;
-        this.password = pass;
-    }
-
-    public User() {
-    }
-
-    public long getId() {
+    // Getters and setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,5 +60,13 @@ public class User {
 
     public void setPassword(String pass) {
         this.password = pass;
+    }
+
+    public List<Orderings> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Orderings> orders) {
+        this.orders = orders;
     }
 }

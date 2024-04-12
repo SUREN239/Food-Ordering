@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import suren.foodorder.exception.UserNotFoundException;
 import suren.foodorder.model.User;
 import suren.foodorder.repository.UserRepo;
-
 import java.util.List;
 
 @RestController
-// @RequestMapping("api/v1/user")
-// @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -20,14 +17,7 @@ public class UserController {
 
     @PostMapping("/users")
     public User newUser(@RequestBody User newUser){
-        System.out.println(newUser.getName());
-        User savedUser = userRepo.save(newUser);
-        if(savedUser != null) {
-            System.out.println("User saved successfully: " + savedUser);
-        } else {
-            System.err.println("Failed to save user: " + newUser);
-        }
-        return savedUser;
+        return userRepo.save(newUser);
     }
 
     @GetMapping("/users")
@@ -40,8 +30,7 @@ public class UserController {
         return userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
-  
-    
+
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody User loginRequest) {
         User user = userRepo.findByEmail(loginRequest.getEmail());
@@ -74,7 +63,6 @@ public class UserController {
     }
 
     @PatchMapping("/user/{id}")
-<<<<<<< HEAD
     public ResponseEntity<User> patchUser(@RequestBody User partialUser, @PathVariable Long id) {
         return userRepo.findById(id)
                 .map(user -> {
@@ -90,21 +78,4 @@ public class UserController {
                     return ResponseEntity.ok(userRepo.save(user));
                 }).orElseThrow(() -> new UserNotFoundException(id));
     }
-=======
-public ResponseEntity<User> patchUser(@RequestBody User partialUser, @PathVariable Long id) {
-    return userRepo.findById(id)
-            .map(user -> {
-                if (partialUser.getName() != null) {
-                    user.setName(partialUser.getName());
-                }
-                if (partialUser.getEmail() != null) {
-                    user.setEmail(partialUser.getEmail());
-                }
-                if (partialUser.getPassword() != null) {
-                    user.setPassword(partialUser.getPassword());
-                }
-                return ResponseEntity.ok(userRepo.save(user));
-            }).orElseThrow(() -> new UserNotFoundException(id));
-}
->>>>>>> bc572556675ae358c37cb6df74be1dcdd2bb5008
 }
